@@ -164,8 +164,8 @@ def get_browser_version_from_os(browser_type=None):
                 r'(Get-Item -Path "$env:PROGRAMFILES\Google\Chrome\Application\chrome.exe").VersionInfo.FileVersion',
                 r'(Get-Item -Path "$env:PROGRAMFILES(x86)\Google\Chrome\Application\chrome.exe").VersionInfo.FileVersion',
                 r'(Get-Item -Path "$env:LOCALAPPDATA\Google\Chrome\Application\chrome.exe").VersionInfo.FileVersion',
-                r'reg query "HKCU\SOFTWARE\Google\Chrome\BLBeacon" /v version',
-                r'reg query "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Google Chrome" /v version'
+                r"(Get-ItemProperty -Path Registry::HKCU\SOFTWARE\Google\Chrome\BLBeacon).version",
+                r'(Get-ItemProperty -Path Registry::"HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Google Chrome").version',
             ),
         },
         ChromeType.CHROMIUM: {
