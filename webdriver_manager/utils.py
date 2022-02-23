@@ -148,8 +148,8 @@ def windows_browser_apps_to_cmd(*apps: str) -> str:
 
     return (
         powershell
-        + " -ExecutionPolicy Bypass -NoLogo -NonInteractive -NoProfile -EncodedCommand "
-        + str(base64.b64encode(script.encode("utf-16-le")), "utf-8")
+        + " -ExecutionPolicy Bypass -NoLogo -NonInteractive -NoProfile "
+        + f'''"{script}"'''
     )
 	
 
