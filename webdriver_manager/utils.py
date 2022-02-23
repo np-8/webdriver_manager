@@ -139,19 +139,20 @@ def windows_browser_apps_to_cmd(*apps: str) -> str:
     Result command example:
        cmd1; if (-not $? -or $? -match $error) { cmd2 }
     """
-    ignore_errors_cmd_part = ' 2>$null' if os.getenv('WDM_LOG_LEVEL') == '0' else ''
     powershell = determine_powershell()
 
-    script = (
-        "$ErrorActionPreference='silentlycontinue' ; "
-            + f'{apps[0]}{ignore_errors_cmd_part} ;'
-            + ''.join(f" if (-not $? -or $? -match $error) {{ {i}{ignore_errors_cmd_part} }}" for i in apps[1:])
+    first_hit_template = """$tmp = {expression}; if ($tmp) {{echo $tmp; Exit;}};"""
+    script = "$ErrorActionPreference='silentlycontinue'; " + " ".join(
+        first_hit_template.format(expression=e) for e in apps
     )
 
-    b64script = str(base64.b64encode(script.encode("utf-16-le")), "utf-8")
-    
-    return f" {powershell} -EncodedCommand {b64script}"  
-            
+    return (
+        powershell
+        + " -ExecutionPolicy Bypass -NoLogo -NonInteractive -NoProfile -EncodedCommand "
+        + str(base64.b64encode(script.encode("utf-16-le")), "utf-8")
+    )
+	
+
 
 def get_browser_version_from_os(browser_type=None):
     """Return installed browser version."""
